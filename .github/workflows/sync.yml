@@ -1,0 +1,26 @@
+name: Upstream Sync
+
+on:
+  schedule:
+    - cron: '0 0 * * *' # 每天国际标准时间 0:00 (北京时间早上 8:00) 自动触发
+  workflow_dispatch: # 允许你在 Actions 页面手动点击触发同步
+
+jobs:
+  sync_latest_from_upstream:
+    runs-on: ubuntu-latest
+    name: Sync latest commits from upstream repo
+
+    steps:
+    # 步骤 1：检出你的 Fork 仓库
+    - name: Checkout target repo
+      uses: actions/checkout@v4
+
+    # 步骤 2：同步上游仓库
+    - name: Sync upstream changes
+      id: sync
+      uses: aormsby/fork-tracker-action@v2.6.0
+      with:
+        upstream_repository: morluto/rea
+        target_upstream_branch: main
+        target_branch: main
+        upstream_pull_args: '--rebase' # 使用 rebase 保持提交历史整洁
